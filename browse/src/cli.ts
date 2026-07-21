@@ -540,6 +540,14 @@ export function extractTabId(args: string[]): { tabId: number | undefined; args:
 }
 
 // ─── Command Dispatch ──────────────────────────────────────────
+export function isExpectedStopDisconnect(command: string, err: any): boolean {
+  return command === 'stop' && (
+    err?.code === 'ECONNREFUSED' ||
+    err?.code === 'ECONNRESET' ||
+    err?.message?.includes('fetch failed')
+  );
+}
+
 async function sendCommand(state: ServerState, command: string, args: string[], retries = 0): Promise<void> {
   // Precedence: CLI --tab-id flag > BROWSE_TAB env var.
   // make-pdf always passes --tab-id; human users typically rely on BROWSE_TAB
@@ -599,6 +607,20 @@ async function sendCommand(state: ServerState, command: string, args: string[], 
         : '[browse] Command timed out after 30s');
       process.exit(1);
     }
+    // The stop command intentionally exits the server before its HTTP response
+    // can always flush on Windows. Treat that expected disconnect as success
+    // instead of entering the crash-restart loop and resurrecting the server.
+    if (isExpectedStopDisconnect(command, err)) {
+      const stoppingState = readState() || state;
+      const deadline = Date.now() + 5000;
+      while (stoppingState?.pid && isProcessAlive(stoppingState.pid) && Date.now() < deadline) {
+        await Bun.sleep(100);
+      }
+      safeUnlinkQuiet(config.stateFile);
+      process.stdout.write('Server stopped\n');
+      return;
+    }
+
     // Connection error — server may have crashed, OR may just be busy.
     if (err.code === 'ECONNREFUSED' || err.code === 'ECONNRESET' || err.message?.includes('fetch failed')) {
       const oldState = readState();

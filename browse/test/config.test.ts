@@ -251,6 +251,19 @@ describe('resolveServerLaunchScripts', () => {
   });
 });
 
+describe('expected stop disconnect', () => {
+  const { isExpectedStopDisconnect } = require('../src/cli');
+
+  test('treats a Windows fetch disconnect during stop as success', () => {
+    expect(isExpectedStopDisconnect('stop', { message: 'fetch failed' })).toBe(true);
+    expect(isExpectedStopDisconnect('stop', { code: 'ECONNRESET' })).toBe(true);
+  });
+
+  test('does not hide disconnects for normal commands', () => {
+    expect(isExpectedStopDisconnect('goto', { message: 'fetch failed' })).toBe(false);
+  });
+});
+
 describe('version mismatch detection', () => {
   test('detects when versions differ', () => {
     const stateVersion = 'abc123';
