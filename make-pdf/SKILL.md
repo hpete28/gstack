@@ -148,8 +148,25 @@ _ROOT=$(git rev-parse --show-toplevel 2>/dev/null)
 P=""
 [ -n "$MAKE_PDF_BIN" ] && [ -x "$MAKE_PDF_BIN" ] && P="$MAKE_PDF_BIN"
 [ -z "$P" ] && [ -n "$_ROOT" ] && [ -x "$_ROOT/.claude/skills/gstack/make-pdf/dist/pdf" ] && P="$_ROOT/.claude/skills/gstack/make-pdf/dist/pdf"
-[ -z "$P" ] && P="$HOME/.claude/skills/gstack/make-pdf/dist/pdf"
-if [ -x "$P" ]; then
+[ -z "$P" ] && [ -n "$_ROOT" ] && [ -x "$_ROOT/.claude/skills/gstack/make-pdf/dist/pdf.exe" ] && P="$_ROOT/.claude/skills/gstack/make-pdf/dist/pdf.exe"
+[ -z "$P" ] && [ -n "$GSTACK_ROOT" ] && [ -x "$GSTACK_ROOT/make-pdf/dist/pdf" ] && P="$GSTACK_ROOT/make-pdf/dist/pdf"
+[ -z "$P" ] && [ -n "$GSTACK_ROOT" ] && [ -x "$GSTACK_ROOT/make-pdf/dist/pdf.exe" ] && P="$GSTACK_ROOT/make-pdf/dist/pdf.exe"
+[ -z "$P" ] && [ -x "$HOME/.gstack/repos/gstack/make-pdf/dist/pdf" ] && P="$HOME/.gstack/repos/gstack/make-pdf/dist/pdf"
+[ -z "$P" ] && [ -x "$HOME/.gstack/repos/gstack/make-pdf/dist/pdf.exe" ] && P="$HOME/.gstack/repos/gstack/make-pdf/dist/pdf.exe"
+[ -z "$P" ] && [ -n "$GSTACK_MAKE_PDF" ] && [ -x "$HOME/.claude/skills/gstack/make-pdf/dist/pdf" ] && P="$HOME/.claude/skills/gstack/make-pdf/dist/pdf"
+[ -z "$P" ] && [ -n "$GSTACK_MAKE_PDF" ] && [ -x "$HOME/.claude/skills/gstack/make-pdf/dist/pdf.exe" ] && P="$HOME/.claude/skills/gstack/make-pdf/dist/pdf.exe"
+
+# The compiled publisher launches the gstack browse daemon. Resolve its Windows
+# binary explicitly when the host preamble did not provide GSTACK_BROWSE_BIN.
+if [ -z "$GSTACK_BROWSE_BIN" ]; then
+  [ -n "$GSTACK_ROOT" ] && [ -x "$GSTACK_ROOT/browse/dist/browse" ] && GSTACK_BROWSE_BIN="$GSTACK_ROOT/browse/dist/browse"
+  [ -z "$GSTACK_BROWSE_BIN" ] && [ -n "$GSTACK_ROOT" ] && [ -x "$GSTACK_ROOT/browse/dist/browse.exe" ] && GSTACK_BROWSE_BIN="$GSTACK_ROOT/browse/dist/browse.exe"
+  [ -z "$GSTACK_BROWSE_BIN" ] && [ -x "$HOME/.gstack/repos/gstack/browse/dist/browse" ] && GSTACK_BROWSE_BIN="$HOME/.gstack/repos/gstack/browse/dist/browse"
+  [ -z "$GSTACK_BROWSE_BIN" ] && [ -x "$HOME/.gstack/repos/gstack/browse/dist/browse.exe" ] && GSTACK_BROWSE_BIN="$HOME/.gstack/repos/gstack/browse/dist/browse.exe"
+fi
+export GSTACK_BROWSE_BIN
+
+if [ -n "$P" ] && [ -x "$P" ]; then
   echo "MAKE_PDF_READY: $P"
   alias _p_="$P"   # shellcheck alias helper (not exported)
   export P   # available as $P in subsequent blocks within the same skill invocation
