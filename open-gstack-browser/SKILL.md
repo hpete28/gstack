@@ -806,8 +806,14 @@ anti-bot stealth, and custom branding. You see every action in real time.
 _ROOT=$(git rev-parse --show-toplevel 2>/dev/null)
 B=""
 [ -n "$_ROOT" ] && [ -x "$_ROOT/.claude/skills/gstack/browse/dist/browse" ] && B="$_ROOT/.claude/skills/gstack/browse/dist/browse"
-[ -z "$B" ] && B="$HOME/.claude/skills/gstack/browse/dist/browse"
-if [ -x "$B" ]; then
+[ -z "$B" ] && [ -n "$_ROOT" ] && [ -x "$_ROOT/.claude/skills/gstack/browse/dist/browse.exe" ] && B="$_ROOT/.claude/skills/gstack/browse/dist/browse.exe"
+# Windows global skill installs are minimal runtime copies. Prefer the canonical
+# source build because its external Node dependencies resolve from that checkout.
+[ -z "$B" ] && [ -x "$HOME/.gstack/repos/gstack/browse/dist/browse" ] && B="$HOME/.gstack/repos/gstack/browse/dist/browse"
+[ -z "$B" ] && [ -x "$HOME/.gstack/repos/gstack/browse/dist/browse.exe" ] && B="$HOME/.gstack/repos/gstack/browse/dist/browse.exe"
+[ -z "$B" ] && [ -x "$HOME/.claude/skills/gstack/browse/dist/browse" ] && B="$HOME/.claude/skills/gstack/browse/dist/browse"
+[ -z "$B" ] && [ -x "$HOME/.claude/skills/gstack/browse/dist/browse.exe" ] && B="$HOME/.claude/skills/gstack/browse/dist/browse.exe"
+if [ -n "$B" ] && [ -x "$B" ]; then
   echo "READY: $B"
 else
   echo "NEEDS_SETUP"

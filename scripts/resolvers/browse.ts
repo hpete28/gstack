@@ -106,8 +106,14 @@ export function generateBrowseSetup(ctx: TemplateContext): string {
 _ROOT=$(git rev-parse --show-toplevel 2>/dev/null)
 B=""
 [ -n "$_ROOT" ] && [ -x "$_ROOT/${ctx.paths.localSkillRoot}/browse/dist/browse" ] && B="$_ROOT/${ctx.paths.localSkillRoot}/browse/dist/browse"
-[ -z "$B" ] && B="$HOME${ctx.paths.browseDir.replace(/^~/, '')}/browse"
-if [ -x "$B" ]; then
+[ -z "$B" ] && [ -n "$_ROOT" ] && [ -x "$_ROOT/${ctx.paths.localSkillRoot}/browse/dist/browse.exe" ] && B="$_ROOT/${ctx.paths.localSkillRoot}/browse/dist/browse.exe"
+# Windows global skill installs are minimal runtime copies. Prefer the canonical
+# source build because its external Node dependencies resolve from that checkout.
+[ -z "$B" ] && [ -x "$HOME/.gstack/repos/gstack/browse/dist/browse" ] && B="$HOME/.gstack/repos/gstack/browse/dist/browse"
+[ -z "$B" ] && [ -x "$HOME/.gstack/repos/gstack/browse/dist/browse.exe" ] && B="$HOME/.gstack/repos/gstack/browse/dist/browse.exe"
+[ -z "$B" ] && [ -x "$HOME${ctx.paths.browseDir.replace(/^~/, '')}/browse" ] && B="$HOME${ctx.paths.browseDir.replace(/^~/, '')}/browse"
+[ -z "$B" ] && [ -x "$HOME${ctx.paths.browseDir.replace(/^~/, '')}/browse.exe" ] && B="$HOME${ctx.paths.browseDir.replace(/^~/, '')}/browse.exe"
+if [ -n "$B" ] && [ -x "$B" ]; then
   echo "READY: $B"
 else
   echo "NEEDS_SETUP"
