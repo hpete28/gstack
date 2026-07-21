@@ -6,10 +6,14 @@ import type { TemplateContext } from './types';
  *
  * $P = make-pdf/dist/pdf.
  *
- * Resolution order (matches src/browseClient.ts::resolveBrowseBin):
- *   1. Local skill root: $_ROOT/{localSkillRoot}/make-pdf/dist/pdf
- *   2. Global: ~/{globalRoot}/make-pdf/dist/pdf
- *   3. Env override (MAKE_PDF_BIN) — for contributor dev builds
+ * Resolution order:
+ *   1. Env override (MAKE_PDF_BIN)
+ *   2. Local vendored skill root
+ *   3. Host runtime root
+ *   4. Official ~/.gstack/repos/gstack source/build tree
+ *
+ * Windows builds use .exe. The generated shell checks both suffixed and
+ * extensionless binaries so the same skill works in Git Bash on every host.
  */
 export function generateMakePdfSetup(ctx: TemplateContext): string {
   return `## MAKE-PDF SETUP (run this check BEFORE any make-pdf command)
@@ -19,8 +23,25 @@ _ROOT=$(git rev-parse --show-toplevel 2>/dev/null)
 P=""
 [ -n "$MAKE_PDF_BIN" ] && [ -x "$MAKE_PDF_BIN" ] && P="$MAKE_PDF_BIN"
 [ -z "$P" ] && [ -n "$_ROOT" ] && [ -x "$_ROOT/${ctx.paths.localSkillRoot}/make-pdf/dist/pdf" ] && P="$_ROOT/${ctx.paths.localSkillRoot}/make-pdf/dist/pdf"
-[ -z "$P" ] && P="$HOME${ctx.paths.makePdfDir.replace(/^~/, '')}/pdf"
-if [ -x "$P" ]; then
+[ -z "$P" ] && [ -n "$_ROOT" ] && [ -x "$_ROOT/${ctx.paths.localSkillRoot}/make-pdf/dist/pdf.exe" ] && P="$_ROOT/${ctx.paths.localSkillRoot}/make-pdf/dist/pdf.exe"
+[ -z "$P" ] && [ -n "$GSTACK_ROOT" ] && [ -x "$GSTACK_ROOT/make-pdf/dist/pdf" ] && P="$GSTACK_ROOT/make-pdf/dist/pdf"
+[ -z "$P" ] && [ -n "$GSTACK_ROOT" ] && [ -x "$GSTACK_ROOT/make-pdf/dist/pdf.exe" ] && P="$GSTACK_ROOT/make-pdf/dist/pdf.exe"
+[ -z "$P" ] && [ -x "$HOME/.gstack/repos/gstack/make-pdf/dist/pdf" ] && P="$HOME/.gstack/repos/gstack/make-pdf/dist/pdf"
+[ -z "$P" ] && [ -x "$HOME/.gstack/repos/gstack/make-pdf/dist/pdf.exe" ] && P="$HOME/.gstack/repos/gstack/make-pdf/dist/pdf.exe"
+[ -z "$P" ] && [ -n "$GSTACK_MAKE_PDF" ] && [ -x "$HOME${ctx.paths.makePdfDir.replace(/^~/, '')}/pdf" ] && P="$HOME${ctx.paths.makePdfDir.replace(/^~/, '')}/pdf"
+[ -z "$P" ] && [ -n "$GSTACK_MAKE_PDF" ] && [ -x "$HOME${ctx.paths.makePdfDir.replace(/^~/, '')}/pdf.exe" ] && P="$HOME${ctx.paths.makePdfDir.replace(/^~/, '')}/pdf.exe"
+
+# The compiled publisher launches the gstack browse daemon. Resolve its Windows
+# binary explicitly when the host preamble did not provide GSTACK_BROWSE_BIN.
+if [ -z "$GSTACK_BROWSE_BIN" ]; then
+  [ -n "$GSTACK_ROOT" ] && [ -x "$GSTACK_ROOT/browse/dist/browse" ] && GSTACK_BROWSE_BIN="$GSTACK_ROOT/browse/dist/browse"
+  [ -z "$GSTACK_BROWSE_BIN" ] && [ -n "$GSTACK_ROOT" ] && [ -x "$GSTACK_ROOT/browse/dist/browse.exe" ] && GSTACK_BROWSE_BIN="$GSTACK_ROOT/browse/dist/browse.exe"
+  [ -z "$GSTACK_BROWSE_BIN" ] && [ -x "$HOME/.gstack/repos/gstack/browse/dist/browse" ] && GSTACK_BROWSE_BIN="$HOME/.gstack/repos/gstack/browse/dist/browse"
+  [ -z "$GSTACK_BROWSE_BIN" ] && [ -x "$HOME/.gstack/repos/gstack/browse/dist/browse.exe" ] && GSTACK_BROWSE_BIN="$HOME/.gstack/repos/gstack/browse/dist/browse.exe"
+fi
+export GSTACK_BROWSE_BIN
+
+if [ -n "$P" ] && [ -x "$P" ]; then
   echo "MAKE_PDF_READY: $P"
   alias _p_="$P"   # shellcheck alias helper (not exported)
   export P   # available as $P in subsequent blocks within the same skill invocation
