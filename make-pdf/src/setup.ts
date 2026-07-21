@@ -3,7 +3,7 @@
  *
  * Flow (per the CEO plan CLI UX spec):
  *   1. Verify browse binary exists and responds
- *   2. Verify Chromium launches via $B goto about:blank
+ *   2. Verify Chromium launches by opening a dedicated blank tab
  *   3. Verify pdftotext is installed (warn, don't fail)
  *   4. Generate a smoke-test PDF from an inline 2-paragraph fixture
  *   5. Open it
@@ -32,11 +32,12 @@ export async function runSetup(): Promise<void> {
     process.exit(4);
   }
 
-  // 2. Chromium smoke (navigate a dedicated tab to about:blank)
+  // 2. Chromium smoke. Do not pass about:blank because browse intentionally
+  // rejects non-http/file schemes; newtab without a URL creates a safe blank tab.
   process.stderr.write("  [2/5] Launching Chromium...");
   let chromiumTab: number | null = null;
   try {
-    chromiumTab = browseClient.newtab("about:blank");
+    chromiumTab = browseClient.newtab();
     process.stderr.write(` OK (tab ${chromiumTab})\n`);
   } catch (err: any) {
     process.stderr.write(" FAIL\n");
