@@ -21,7 +21,7 @@ import { spawnTerminalAgent } from './terminal-agent-control';
 
 const config = resolveConfig();
 const IS_WINDOWS = process.platform === 'win32';
-const MAX_START_WAIT = IS_WINDOWS ? 15000 : (process.env.CI ? 30000 : 8000); // Node+Chromium takes longer on Windows
+const MAX_START_WAIT = IS_WINDOWS ? 60000 : (process.env.CI ? 30000 : 8000); // Windows cold starts can exceed 40s on slower or heavily scanned hosts
 
 export function resolveServerScript(
   env: Record<string, string | undefined> = process.env,
