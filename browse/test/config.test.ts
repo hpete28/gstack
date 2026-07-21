@@ -227,6 +227,30 @@ describe('resolveNodeServerScript', () => {
   });
 });
 
+describe('resolveServerLaunchScripts', () => {
+  const { resolveServerLaunchScripts } = require('../src/cli');
+
+  test('uses adjacent Windows Node bundle without requiring server.ts', () => {
+    const distDir = fs.mkdtempSync(path.join(os.tmpdir(), 'gstack-packaged-browser-'));
+    const nodeBundle = path.join(distDir, 'server-node.mjs');
+    fs.writeFileSync(nodeBundle, '// packaged server fixture\n');
+
+    try {
+      const result = resolveServerLaunchScripts(
+        true,
+        {},
+        '/$bunfs/root',
+        path.join(distDir, 'browse.exe')
+      );
+
+      expect(result.nodeServerScript).toBe(nodeBundle);
+      expect(result.serverScript).toBe('');
+    } finally {
+      fs.rmSync(distDir, { recursive: true, force: true });
+    }
+  });
+});
+
 describe('version mismatch detection', () => {
   test('detects when versions differ', () => {
     const stateVersion = 'abc123';
@@ -367,7 +391,7 @@ describe('resolveChromiumProfile', () => {
     delete process.env.CHROMIUM_PROFILE;
     process.env.GSTACK_HOME = '/tmp/fallback-gstack';
     try {
-      expect(resolveChromiumProfile()).toBe('/tmp/fallback-gstack/chromium-profile');
+      expect(resolveChromiumProfile()).toBe(path.join('/tmp/fallback-gstack', 'chromium-profile'));
     } finally {
       if (origEnv !== undefined) process.env.CHROMIUM_PROFILE = origEnv;
       if (origHome === undefined) delete process.env.GSTACK_HOME;

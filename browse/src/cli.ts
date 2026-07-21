@@ -55,8 +55,6 @@ export function resolveServerScript(
   );
 }
 
-const SERVER_SCRIPT = resolveServerScript();
-
 /**
  * On Windows, resolve the Node.js-compatible server bundle.
  * Falls back to null if not found (server will use Bun instead).
@@ -80,7 +78,25 @@ export function resolveNodeServerScript(
   return null;
 }
 
-const NODE_SERVER_SCRIPT = IS_WINDOWS ? resolveNodeServerScript() : null;
+/**
+ * Resolve the server launch assets without requiring source files when a packaged
+ * Windows install already contains the adjacent Node server bundle.
+ */
+export function resolveServerLaunchScripts(
+  isWindows: boolean = IS_WINDOWS,
+  env: Record<string, string | undefined> = process.env,
+  metaDir: string = import.meta.dir,
+  execPath: string = process.execPath
+): { serverScript: string; nodeServerScript: string | null } {
+  const nodeServerScript = isWindows ? resolveNodeServerScript(metaDir, execPath) : null;
+  const serverScript = nodeServerScript ? '' : resolveServerScript(env, metaDir, execPath);
+  return { serverScript, nodeServerScript };
+}
+
+const {
+  serverScript: SERVER_SCRIPT,
+  nodeServerScript: NODE_SERVER_SCRIPT,
+} = resolveServerLaunchScripts();
 
 // On Windows, hard-fail if server-node.mjs is missing — the Bun path is known broken.
 if (IS_WINDOWS && !NODE_SERVER_SCRIPT) {
