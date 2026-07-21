@@ -55,6 +55,14 @@ describe('setup: _link_or_copy invariant (D7)', () => {
     const fnBody = SETUP_SRC.slice(fnStart, fnEnd);
     expect(fnBody).toContain('_print_windows_copy_note_once');
   });
+
+  test('link_codex_skill_dirs refreshes existing Windows directory copies', () => {
+    const fnStart = SETUP_SRC.indexOf('link_codex_skill_dirs() {');
+    const fnEnd = SETUP_SRC.indexOf('\n}\n', fnStart);
+    const fnBody = SETUP_SRC.slice(fnStart, fnEnd);
+    expect(fnBody).toContain('if [ "$IS_WINDOWS" -eq 1 ] || [ -L "$target" ] || [ ! -e "$target" ]; then');
+    expect(fnBody).toContain('_link_or_copy "$skill_dir" "$target"');
+  });
 });
 
 // Behavior matrix uses Unix `ln -snf` semantics in the IS_WINDOWS=0 cells.

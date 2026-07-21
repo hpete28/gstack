@@ -727,8 +727,10 @@ link_codex_skill_dirs() {
       # symlink that Step 5 already pointed at the repo root.
       [ "$skill_name" = "gstack" ] && continue
       target="$skills_dir/$skill_name"
-      # Create or update symlink
-      if [ -L "$target" ] || [ ! -e "$target" ]; then
+      # Create or update the installation. Windows targets are real copied
+      # directories, so they must be refreshed on every setup run; otherwise
+      # the global skill catalog silently remains stale after source updates.
+      if [ "$IS_WINDOWS" -eq 1 ] || [ -L "$target" ] || [ ! -e "$target" ]; then
         _link_or_copy "$skill_dir" "$target"
         linked+=("$skill_name")
       fi
