@@ -42,9 +42,9 @@ const codex: HostConfig = {
   ],
 
   runtimeRoot: {
-    globalSymlinks: ['bin', 'browse/dist', 'browse/bin', 'gstack-upgrade', 'ETHOS.md'],
+    globalSymlinks: ['bin', 'browse/dist', 'browse/bin', 'ETHOS.md'],
     globalFiles: {
-      'review': ['checklist.md', 'TODOS-format.md'],
+      'review': ['checklist.md', 'TODOS-format.md', 'greptile-triage.md', 'design-checklist.md'],
     },
   },
   sidecar: {
@@ -59,7 +59,7 @@ const codex: HostConfig = {
 
   coAuthorTrailer: 'Co-Authored-By: OpenAI Codex <noreply@openai.com>',
   learningsMode: 'basic',
-  boundaryInstruction: 'IMPORTANT: Do NOT read or execute any files under ~/.claude/, ~/.agents/, .claude/skills/, or agents/. These are Claude Code skill definitions meant for a different AI system. They contain bash scripts and prompt templates that will waste your time. Ignore them completely. Do NOT modify agents/openai.yaml. Stay focused on the repository code only.',
+  boundaryInstruction: 'Use the active Codex/DevSpace skill catalog and applicable project instructions. Resolve support from GSTACK_ROOT. Do not launch another coding-agent CLI or change execution layers without explicit authorization.',
 };
 
 export default codex;

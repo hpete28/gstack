@@ -23,7 +23,7 @@ For each failing test:
 
 ### Step T2: Handle in-branch failures
 
-**STOP.** These are your failures. Show them and do not proceed. The developer must fix their own broken tests before shipping.
+Diagnose failures caused by the current work, make scoped repairs within the authorized task, and rerun the affected checks in this same workflow. Then run the remaining required shipping gates against the repaired revision. Do not push failing code or hand back merely to request another /ship invocation. Stop only for an unresolved decision, external blocker, or repair outside the authorized scope.
 
 ### Step T3: Handle pre-existing failures
 
@@ -69,7 +69,7 @@ Use AskUserQuestion:
 - Continue with the workflow.
 
 **If "Add as P0 TODO":**
-- If \`TODOS.md\` exists, add the entry following the format in \`review/TODOS-format.md\` (or \`.claude/skills/review/TODOS-format.md\`).
+- If \`TODOS.md\` exists, add the entry following the format in \`review/TODOS-format.md\` (or \`~/.claude/skills/gstack/review/TODOS-format.md\`).
 - If \`TODOS.md\` does not exist, create it with the standard header and add the entry.
 - Entry should include: title, the error output, which branch it was noticed on, and priority P0.
 - Continue with the workflow — treat the pre-existing failure as non-blocking.

@@ -259,7 +259,8 @@ function extractVoiceTriggers(content: string): string[] {
  * then strip the field from frontmatter. Must run BEFORE transformFrontmatter
  * and extractNameAndDescription so all hosts see the updated description.
  */
-function processVoiceTriggers(content: string): string {
+function processVoiceTriggers(content: string, host?: Host): string {
+  if (host === 'codex') return content.replace(/^voice-triggers:\n(?:\s+-\s+"[^"]*"\n?)*/m, '');
   const triggers = extractVoiceTriggers(content);
   if (triggers.length === 0) return content;
 
@@ -769,7 +770,7 @@ function processExternalHost(
   }
 
   // Extract hook safety prose BEFORE transforming frontmatter (which strips hooks)
-  const safetyProse = extractHookSafetyProse(tmplContent);
+  const safetyProse = host === 'codex' ? '' : extractHookSafetyProse(tmplContent);
 
   // Transform frontmatter (host-aware)
   let result = transformFrontmatter(content, host);
@@ -825,7 +826,7 @@ function processTemplate(tmplPath: string, host: Host = 'claude'): { outputPath:
   // Preprocess voice triggers: fold into description, strip field from frontmatter.
   // Must run BEFORE transformFrontmatter so all hosts see the updated description,
   // and BEFORE extractedDescription is used by external host metadata.
-  content = processVoiceTriggers(content);
+  content = processVoiceTriggers(content, host);
 
   // Re-extract description AFTER voice trigger preprocessing so Codex openai.yaml
   // metadata gets the updated description with voice triggers included.

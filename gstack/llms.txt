@@ -10,61 +10,61 @@ Conventions:
 
 ## Skills
 
-- [/autoplan](autoplan/SKILL.md): Auto-review pipeline — reads the full CEO, design, eng, and DX review skills from disk and runs them sequentially with auto-decisions using 6 decision principles.
-- [/benchmark](benchmark/SKILL.md): Performance regression detection using the browse daemon.
-- [/benchmark-models](benchmark-models/SKILL.md): Cross-model benchmark for gstack skills.
-- [/browse](browse/SKILL.md): Fast headless browser for QA testing and site dogfooding.
-- [/canary](canary/SKILL.md): Post-deploy canary monitoring.
-- [/careful](careful/SKILL.md): Safety guardrails for destructive commands.
-- [/claude](claude/SKILL.md): Claude Code CLI wrapper for non-Claude hosts - three modes.
+- [/autoplan](autoplan/SKILL.md): Run coordinated product, design, engineering, and developer-experience plan reviews when a comprehensive plan review is requested.
+- [/benchmark](benchmark/SKILL.md): Measure web performance against a saved baseline and investigate regressions.
+- [/benchmark-models](benchmark-models/SKILL.md): Benchmark gstack prompts across explicitly selected model CLIs for latency, cost and quality.
+- [/browse](browse/SKILL.md): Control the gstack headless browser for web QA and dogfooding with snapshots and reproducible interactions.
+- [/canary](canary/SKILL.md): Monitor a deployed app for health and performance regressions during a requested canary window.
+- [/careful](careful/SKILL.md): Apply advisory scrutiny to destructive commands when careful mode is requested; this skill does not install enforcement hooks.
+- [/claude](claude/SKILL.md): Obtain a Claude CLI review, challenge, or consultation when that external agent is explicitly requested.
 - [/codex](codex/SKILL.md): OpenAI Codex CLI wrapper — three modes.
-- [/context-restore](context-restore/SKILL.md): Restore working context saved earlier by /context-save.
-- [/context-save](context-save/SKILL.md): Save working context.
-- [/cso](cso/SKILL.md): Chief Security Officer mode.
-- [/design-consultation](design-consultation/SKILL.md): Design consultation: understands your product, researches the landscape, proposes a complete design system (aesthetic, typography, color, layout, spacing, motion), and generates font+color preview pages.
-- [/design-html](design-html/SKILL.md): Design finalization: generates production-quality Pretext-native HTML/CSS.
-- [/design-review](design-review/SKILL.md): Designer's eye QA: finds visual inconsistency, spacing issues, hierarchy problems, AI slop patterns, and slow interactions — then fixes them.
-- [/design-shotgun](design-shotgun/SKILL.md): Design shotgun: generate multiple AI design variants, open a comparison board, collect structured feedback, and iterate.
-- [/devex-review](devex-review/SKILL.md): Live developer experience audit.
-- [/diagram](diagram/SKILL.md): Turn an English description (or mermaid source) into a diagram triplet: the source, an editable .excalidraw file you can open on excalidraw.com, and rendered SVG + PNG (clean mermaid style; the .excalidraw carries the hand-drawn aesthetic).
-- [/document-generate](document-generate/SKILL.md): Generate missing documentation from scratch for a feature, module, or entire project.
-- [/document-release](document-release/SKILL.md): Post-ship documentation update.
-- [/freeze](freeze/SKILL.md): Restrict file edits to a specific directory for the session.
-- [/gstack](gstack/SKILL.md): Router for the gstack skill suite.
-- [/gstack-upgrade](gstack-upgrade/SKILL.md): Upgrade gstack to the latest version.
-- [/guard](guard/SKILL.md): Full safety mode: destructive command warnings + directory-scoped edits.
-- [/health](health/SKILL.md): Code quality dashboard.
-- [/investigate](investigate/SKILL.md): Systematic debugging with root cause investigation.
-- [/ios-clean](ios-clean/SKILL.md): Remove the DebugBridge SPM package and all #if DEBUG wiring from an iOS app.
-- [/ios-design-review](ios-design-review/SKILL.md): Visual design audit for iOS apps on real hardware.
-- [/ios-fix](ios-fix/SKILL.md): Autonomous iOS bug fixer.
-- [/ios-qa](ios-qa/SKILL.md): Live-device iOS QA for SwiftUI apps.
-- [/ios-sync](ios-sync/SKILL.md): Regenerate the iOS debug bridge against the latest upstream gstack templates.
-- [/land-and-deploy](land-and-deploy/SKILL.md): Land and deploy workflow.
-- [/landing-report](landing-report/SKILL.md): Read-only queue dashboard for workspace-aware ship.
-- [/learn](learn/SKILL.md): Manage project learnings.
-- [/make-pdf](make-pdf/SKILL.md): Turn any markdown file into a publication-quality PDF.
-- [/office-hours](office-hours/SKILL.md): YC Office Hours — two modes.
-- [/open-gstack-browser](open-gstack-browser/SKILL.md): Launch GStack Browser — AI-controlled Chromium with the sidebar extension baked in.
-- [/pair-agent](pair-agent/SKILL.md): Pair a remote AI agent with your browser.
-- [/plan-ceo-review](plan-ceo-review/SKILL.md): CEO/founder-mode plan review.
-- [/plan-design-review](plan-design-review/SKILL.md): Designer's eye plan review — interactive, like CEO and Eng review.
-- [/plan-devex-review](plan-devex-review/SKILL.md): Interactive developer experience plan review.
-- [/plan-eng-review](plan-eng-review/SKILL.md): Eng manager-mode plan review.
-- [/plan-tune](plan-tune/SKILL.md): Self-tuning question sensitivity + developer psychographic for gstack (v1: observational).
-- [/qa](qa/SKILL.md): Systematically QA test a web application and fix bugs found.
-- [/qa-only](qa-only/SKILL.md): Report-only QA testing.
-- [/retro](retro/SKILL.md): Weekly engineering retrospective.
-- [/review](review/SKILL.md): Pre-landing PR review.
-- [/scrape](scrape/SKILL.md): Pull data from a web page.
-- [/setup-browser-cookies](setup-browser-cookies/SKILL.md): Import cookies from your real Chromium browser into the headless browse session.
-- [/setup-deploy](setup-deploy/SKILL.md): Configure deployment settings for /land-and-deploy.
-- [/setup-gbrain](setup-gbrain/SKILL.md): Set up gbrain for this coding agent: install the CLI, initialize a local PGLite or Supabase brain, register MCP, capture per-remote trust policy.
-- [/ship](ship/SKILL.md): Ship workflow: detect + merge base branch, run tests, review diff, bump VERSION, update CHANGELOG, commit, push, create PR.
-- [/skillify](skillify/SKILL.md): Codify the most recent successful /scrape flow into a permanent browser-skill on disk.
-- [/spec](spec/SKILL.md): Turn vague intent into a precise, executable spec in five phases.
-- [/sync-gbrain](sync-gbrain/SKILL.md): Keep gbrain current with this repo's code and refresh agent search guidance in CLAUDE.md.
-- [/unfreeze](unfreeze/SKILL.md): Clear the freeze boundary set by /freeze, allowing edits to all directories again.
+- [/context-restore](context-restore/SKILL.md): Resume work from saved gstack context, checking current repository and runtime state first.
+- [/context-save](context-save/SKILL.md): Save repository state, decisions and remaining work for a later session.
+- [/cso](cso/SKILL.md): Audit application and infrastructure security, including secrets, supply chain and trust boundaries.
+- [/design-consultation](design-consultation/SKILL.md): Develop a visual design system and previews when design exploration or consultation is requested.
+- [/design-html](design-html/SKILL.md): Implement a design as HTML/CSS from an approved mockup, design plan, or concrete visual brief.
+- [/design-review](design-review/SKILL.md): Inspect a live UI for visual and interaction defects and apply fixes within the requested scope.
+- [/design-shotgun](design-shotgun/SKILL.md): Generate and compare alternative visual concepts when multiple design directions are requested.
+- [/devex-review](devex-review/SKILL.md): Audit a real developer journey through documentation, setup, CLI/API use and error recovery.
+- [/diagram](diagram/SKILL.md): Generate Mermaid, editable Excalidraw, and rendered SVG/PNG diagrams from a description.
+- [/document-generate](document-generate/SKILL.md): Write missing project or feature documentation using verified repository behavior.
+- [/document-release](document-release/SKILL.md): Update documentation affected by a shipped change using the reviewed diff and current behavior.
+- [/freeze](freeze/SKILL.md): Maintain an advisory directory boundary for edits when requested; host enforcement must be verified separately.
+- [/gstack](gstack/SKILL.md): Select a gstack workflow when asked to use the suite or choose among its skills.
+- [/gstack-upgrade](gstack-upgrade/SKILL.md): Upgrade an installed gstack package and verify the resulting version when requested.
+- [/guard](guard/SKILL.md): Combine advisory destructive-command review and a requested directory edit boundary.
+- [/health](health/SKILL.md): Run relevant installed code-quality tools and summarize project health and trends.
+- [/investigate](investigate/SKILL.md): Diagnose unexpected behavior, establish its cause, and implement a scoped fix when authorized.
+- [/ios-clean](ios-clean/SKILL.md): Remove the gstack DebugBridge package and debug-only wiring from an iOS app when requested.
+- [/ios-design-review](ios-design-review/SKILL.md): Review iOS visual design on a connected device using the installed debug bridge.
+- [/ios-fix](ios-fix/SKILL.md): Fix and verify an identified iOS defect using source changes and a connected test device.
+- [/ios-qa](ios-qa/SKILL.md): Exercise SwiftUI app behavior on a connected iPhone through the gstack debug bridge.
+- [/ios-sync](ios-sync/SKILL.md): Regenerate an installed iOS debug bridge against the current gstack templates.
+- [/land-and-deploy](land-and-deploy/SKILL.md): Merge an authorized PR, follow deployment, and verify the live acceptance path.
+- [/landing-report](landing-report/SKILL.md): Inspect the gstack shipping queue and version reservations without modifying them.
+- [/learn](learn/SKILL.md): Search, review, prune or export saved gstack project learnings.
+- [/make-pdf](make-pdf/SKILL.md): Render Markdown as a publication PDF with pagination, links and layout verification.
+- [/office-hours](office-hours/SKILL.md): Explore a product idea, user need and scope when brainstorming or product discovery is requested.
+- [/open-gstack-browser](open-gstack-browser/SKILL.md): Launch the visible GStack Browser when that browser is requested.
+- [/pair-agent](pair-agent/SKILL.md): Connect an explicitly requested remote agent to a browser session using a bounded setup key.
+- [/plan-ceo-review](plan-ceo-review/SKILL.md): Review product premises, value and scope in a proposed plan.
+- [/plan-design-review](plan-design-review/SKILL.md): Review a proposed UI plan for visual hierarchy, interaction and design completeness.
+- [/plan-devex-review](plan-devex-review/SKILL.md): Review a proposed developer experience for setup, API/CLI usability and friction.
+- [/plan-eng-review](plan-eng-review/SKILL.md): Review a technical plan for architecture, data flow, failure cases, performance and validation.
+- [/plan-tune](plan-tune/SKILL.md): Inspect and adjust gstack question preferences when the user requests workflow tuning.
+- [/qa](qa/SKILL.md): Test a web application's user flows and fix verified defects within the authorized scope.
+- [/qa-only](qa-only/SKILL.md): Test a web application and report reproducible defects without changing its source.
+- [/retro](retro/SKILL.md): Analyze repository activity and engineering trends for a requested retrospective.
+- [/review](review/SKILL.md): Review a code diff for concrete correctness, security and regression risks.
+- [/scrape](scrape/SKILL.md): Extract structured data from a website with gstack browse, reusing a matching recorded workflow when available.
+- [/setup-browser-cookies](setup-browser-cookies/SKILL.md): Import selected browser cookies into gstack for an authorized authenticated test.
+- [/setup-deploy](setup-deploy/SKILL.md): Configure project-specific deployment and health-check commands for gstack release workflows.
+- [/setup-gbrain](setup-gbrain/SKILL.md): Set up gbrain storage, CLI and integration when requested.
+- [/ship](ship/SKILL.md): Complete authorized release preparation, repair scoped failures, run gates, commit, push and create a PR.
+- [/skillify](skillify/SKILL.md): Turn a successful gstack scrape flow into a reusable browser skill when requested.
+- [/spec](spec/SKILL.md): Develop an executable feature specification or issue from a brief; separate agent execution requires explicit authorization.
+- [/sync-gbrain](sync-gbrain/SKILL.md): Refresh an existing gbrain code index and its project search guidance when requested.
+- [/unfreeze](unfreeze/SKILL.md): Clear the advisory edit boundary established by freeze.
 
 ## Browse Commands
 

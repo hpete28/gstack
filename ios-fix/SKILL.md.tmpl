@@ -2,15 +2,7 @@
 name: ios-fix
 preamble-tier: 3
 version: 1.0.0
-description: |
-  Autonomous iOS bug fixer. Takes a bug found by /ios-qa, reads the source,
-  writes the fix, rebuilds, redeploys, and verifies the fix on the real
-  device. Closes the loop: find bug → fix bug → confirm fix — zero human
-  intervention. Captures the pre-bug state snapshot as a regression test
-  fixture, so the bug can never recur silently.
-  Use when /ios-qa reports a bug and you want it fixed automatically, or
-  when asked to "fix this iOS bug", "patch the iPhone app", or "auto-fix
-  the iOS issue". (gstack)
+description: Fix and verify an identified iOS defect using source changes and a connected test device.
 voice-triggers:
   - "fix the iOS bug"
   - "patch the iPhone app"

@@ -401,11 +401,12 @@ describe('host-config-export.ts CLI', () => {
     expect(exitCode).toBe(1);
   });
 
-  test('detect finds claude (since we are running in claude)', () => {
+  test('detect returns registered hosts without assuming the calling agent', () => {
     const { stdout, exitCode } = run('detect');
     expect(exitCode).toBe(0);
-    // claude binary should be on PATH in this environment
-    expect(stdout).toContain('claude');
+    for (const name of stdout.trim().split(/\s+/).filter(Boolean)) {
+      expect(ALL_HOST_NAMES).toContain(name);
+    }
   });
 
   test('unknown command exits 1', () => {
@@ -508,7 +509,8 @@ describe('host config correctness', () => {
 
   test('codex has boundary instruction', () => {
     expect(codex.boundaryInstruction).toBeDefined();
-    expect(codex.boundaryInstruction).toContain('Do NOT read');
+    expect(codex.boundaryInstruction).toContain('GSTACK_ROOT');
+    expect(codex.boundaryInstruction).toContain('explicit authorization');
   });
 
   test('openclaw has tool rewrites for exec/read/write', () => {

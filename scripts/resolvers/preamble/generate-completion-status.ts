@@ -30,6 +30,7 @@ If the user invokes a skill in plan mode, the skill takes precedence over generi
 }
 
 export function generateCompletionStatus(ctx: TemplateContext): string {
+  if (ctx.host === 'codex') return 'Report the requested outcome, relevant validation and any unresolved blocker. Continue remaining authorized work; do not run optional setup or telemetry as a completion requirement.';
   return `## Completion Status Protocol
 
 When completing a skill workflow, report status using one of:

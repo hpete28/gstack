@@ -1,0 +1,55 @@
+#!/usr/bin/env bash
+# Source after resolving GSTACK_ROOT. Read-only context: no installs, prompts,
+# telemetry, session cleanup, synchronization, or persistent config changes.
+GSTACK_BIN="$GSTACK_ROOT/bin"
+GSTACK_BROWSE="$GSTACK_ROOT/browse/dist"
+GSTACK_DESIGN="$GSTACK_ROOT/design/dist"
+GSTACK_MAKE_PDF="$GSTACK_ROOT/make-pdf/dist"
+GSTACK_STATE_ROOT=${GSTACK_STATE_ROOT:-${GSTACK_HOME:-$HOME/.gstack}}
+PLAN_ROOT=${GSTACK_PLAN_DIR:-$HOME/.codex/plans}
+TMP_ROOT=${TMPDIR:-${TMP:-$GSTACK_STATE_ROOT/tmp}}
+_PROACTIVE=true
+_SKILL_PREFIX=false
+_TEL=off
+_EXPLAIN_LEVEL=default
+_QUESTION_TUNING=false
+_CHECKPOINT_MODE=explicit
+_CHECKPOINT_PUSH=false
+REPO_MODE=unknown
+# Read the supported scalar settings in one pass; never evaluate config as code.
+if [ -f "$GSTACK_STATE_ROOT/config.yaml" ]; then
+  while IFS= read -r _line || [ -n "$_line" ]; do
+    if [[ "$_line" =~ ^[[:space:]]*([a-z_]+):[[:space:]]*(.*)$ ]]; then
+      _key=${BASH_REMATCH[1]}; _value=${BASH_REMATCH[2]%%#*}
+      _value=${_value//[[:space:]]/}; _value=${_value//\"/}; _value=${_value//\'/}
+      case "$_key:$_value" in
+        proactive:true|proactive:false) _PROACTIVE=$_value ;;
+        skill_prefix:true|skill_prefix:false) _SKILL_PREFIX=$_value ;;
+        telemetry:off|telemetry:anonymous|telemetry:community) _TEL=$_value ;;
+        explain_level:default|explain_level:terse) _EXPLAIN_LEVEL=$_value ;;
+        question_tuning:true|question_tuning:false) _QUESTION_TUNING=$_value ;;
+        checkpoint_mode:explicit|checkpoint_mode:continuous) _CHECKPOINT_MODE=$_value ;;
+        checkpoint_push:true|checkpoint_push:false) _CHECKPOINT_PUSH=$_value ;;
+        repo_mode:solo|repo_mode:collaborative) REPO_MODE=$_value ;;
+      esac
+    fi
+  done < "$GSTACK_STATE_ROOT/config.yaml"
+fi
+unset _line _key _value
+_BRANCH=$(git branch --show-current 2>/dev/null || echo unknown)
+_SESSION_KIND=interactive
+_SESSION_ID="$$-$(date +%s)"
+_TEL_START=$(date +%s)
+case "$REPO_MODE" in solo|collaborative) ;; *) REPO_MODE=unknown ;; esac
+_slug_cache="$HOME/.gstack/slug-cache/$(printf '%s' "$PWD" | tr '/' '_')"
+SLUG=""
+if [ -f "$_slug_cache" ]; then SLUG=$(tr -cd 'a-zA-Z0-9._-' < "$_slug_cache"); fi
+if [ -z "$SLUG" ]; then
+  _remote=$(git remote get-url origin 2>/dev/null || true)
+  SLUG=$(printf '%s' "$_remote" | sed 's|.*[:/]\([^/]*/[^/]*\)\.git$|\1|;s|.*[:/]\([^/]*/[^/]*\)$|\1|' | tr '/' '-' | tr -cd 'a-zA-Z0-9._-')
+fi
+SLUG=${SLUG:-$(basename "$PWD" | tr -cd 'a-zA-Z0-9._-')}
+BRANCH=$(printf '%s' "$_BRANCH" | tr -cd 'a-zA-Z0-9._-')
+unset _slug_cache _remote
+GSTACK_PLAN_MODE=${GSTACK_PLAN_MODE:-inactive}
+export GSTACK_ROOT GSTACK_BIN GSTACK_BROWSE GSTACK_DESIGN GSTACK_MAKE_PDF GSTACK_PLAN_MODE

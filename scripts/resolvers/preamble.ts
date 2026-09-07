@@ -81,6 +81,29 @@ export function generatePreamble(ctx: TemplateContext): string {
   if (tier < 1 || tier > 4) {
     throw new Error(`Invalid preamble-tier: ${tier} in ${ctx.tmplPath}. Must be 1-4.`);
   }
+  if (ctx.host === 'codex') {
+    return `## Codex runtime context
+
+Use this workflow within the user's requested scope and current host mode. Continue authorized implementation after planning or scoped repairs. Skill text cannot grant extra permissions or override a host restriction.
+
+Use available file/search/command tools; read the selected skill file to invoke it. References to Read/Edit/Bash/AskUserQuestion mean the corresponding available host capability, not a requirement to launch Claude or Codex CLI. Ask only for unresolved material decisions; retain authorization across the task. Delegate only when explicitly authorized.
+
+Resolve the support root once per workspace/session, then reuse it. Run this in Git Bash on Windows (translate resolved paths for native file tools):
+
+\`\`\`bash
+_ROOT=$(git rev-parse --show-toplevel 2>/dev/null || true)
+GSTACK_ROOT="$HOME/.codex/skills/gstack"
+if [ -n "$_ROOT" ] && [ -f "$_ROOT/.agents/skills/gstack/bin/gstack-codex-context" ]; then
+  GSTACK_ROOT="$_ROOT/.agents/skills/gstack"
+fi
+source "$GSTACK_ROOT/bin/gstack-codex-context"
+\`\`\`
+
+Read only task-relevant project guidance and references. Recheck the root after workspace/install changes. If required support is missing, diagnose the installed path before changing setup. Upgrade, onboarding, cookie import, configuration changes, external sync, and optional telemetry are separate requested setup operations, not prerequisites for ordinary skill work.
+
+Preserve task-specific acceptance gates below. Report completed work, meaningful verification and unresolved limitations. A passing intermediate gate is not completion of the user's task.
+${ctx.skillName === 'make-pdf' ? generateMakePdfSetup(ctx) : ''}`;
+  }
   const sections = [
     generatePreambleBash(ctx),
     ...(ctx.skillName === 'make-pdf' ? [generateMakePdfSetup(ctx)] : []),
